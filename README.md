@@ -1,5 +1,7 @@
 # AAI Aviation Server Location Tracker & Monitoring Dashboard
 
+> **✅ Project Status: COMPLETE** — This project has been fully built and deployed.
+
 ## 📖 What is this Project?
 The **AAI Server Tracker** is an AI-powered, full-stack monitoring web application designed specifically for the **Airports Authority of India (AAI)**. It acts as a centralized dashboard to track the health, latency, and status of critical aviation servers—such as Air Traffic Control (ATC), CNS Radar, and Digi Yatra nodes—distributed across major airports in India. 
 
@@ -192,6 +194,15 @@ Update `DATABASE_URL` in `.env` to PostgreSQL connection string.
 - **Native Mobile Application:** Deploy a dedicated mobile app (via PWA or React Native) to push critical high-severity outage notifications directly to operator smartphones.
 - **Extended Log Integrations:** Direct data integration with hardware switches and Air Traffic Services Interfacility Data Communications (AIDC) logs for deeper operational context.
 - **Automated PDF Reports:** Auto-generated weekly and monthly PDF summaries detailing uptime history, AI prediction accuracy, and incident post-mortems for AAI stakeholders.
+
+## 📬 Contact
+
+Have questions, suggestions, or want to collaborate? Feel free to reach out!
+
+**Ravi Panchal**
+📧 [ravi.panchal.kaithi@gmail.com](mailto:ravi.panchal.kaithi@gmail.com)
+
+---
 
 ## 📄 License
 
