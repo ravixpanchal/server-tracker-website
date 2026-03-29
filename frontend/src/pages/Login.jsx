@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { Plane, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 export default function Login() {
@@ -10,7 +11,12 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { setTheme } = useTheme();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setTheme('light');
+  }, [setTheme]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +26,15 @@ export default function Login() {
       await login(username, password);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Login failed. Please try again.');
+      if (err.message === 'Network Error') {
+        setError('Network error. Is the backend server running? (If on Render free tier, it might be waking up... please wait 1 min and try again)');
+      } else if (err.response?.status === 404) {
+        setError('API Endpoint not found (404). Did you set VITE_API_URL on Render?');
+      } else if (err.response?.status >= 500) {
+        setError('Server is down or waking up. Please try again in a minute.');
+      } else {
+        setError(err.response?.data?.detail || 'Login failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -73,11 +87,20 @@ export default function Login() {
         >
           {/* Mobile logo header */}
           <div className="lg:hidden flex flex-col items-center text-center mb-8">
-            <div className="w-16 h-16 rounded-[1.5rem] bg-primary-100 dark:bg-primary-900 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-[1.5rem] bg-primary-100 dark:bg-primary-900 flex items-center justify-center mb-4 border border-primary-500/10">
               <Plane className="w-8 h-8 text-primary-500" />
             </div>
-            <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>AAI System</h1>
-            <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Monitoring Dashboard</p>
+            <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>AAI Server Tracker</h1>
+            <p className="text-xs mt-2 px-2 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              AI-powered aviation infrastructure monitoring system for Airports Authority of India
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 mt-5">
+              {['16+ Servers', 'Real-time AI', 'Pan India'].map(item => (
+                <div key={item} className="text-center px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-800" style={{ background: 'var(--bg-primary)' }}>
+                  <p className="text-[10px] font-semibold tracking-wide uppercase" style={{ color: 'var(--text-secondary)' }}>{item}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="mb-8 hidden lg:block">
@@ -161,6 +184,13 @@ export default function Login() {
               <p><strong>Admin:</strong> admin / admin123</p>
               <p><strong>Operator:</strong> operator / operator123</p>
             </div>
+          </div>
+
+          {/* Mobile footer */}
+          <div className="lg:hidden mt-8 text-center pb-4">
+            <p className="text-[10px] sm:text-xs font-medium tracking-wide" style={{ color: 'var(--text-muted)' }}>
+              Made with ❤️ by Ravi Panchal.<br className="sm:hidden" /> All Rights Reserved @2026
+            </p>
           </div>
 
         </div>
