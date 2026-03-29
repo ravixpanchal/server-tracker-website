@@ -42,6 +42,13 @@ def get_alerts(
     return result
 
 
+@router.put("/read-all")
+def mark_all_read(db: Session = Depends(get_db)):
+    db.query(Alert).filter(Alert.is_read == False).update({"is_read": True})
+    db.commit()
+    return {"status": "ok"}
+
+
 @router.put("/{alert_id}/read")
 def mark_alert_read(alert_id: int, db: Session = Depends(get_db)):
     alert = db.query(Alert).filter(Alert.id == alert_id).first()
@@ -49,13 +56,6 @@ def mark_alert_read(alert_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Alert not found")
 
     alert.is_read = True
-    db.commit()
-    return {"status": "ok"}
-
-
-@router.put("/read-all")
-def mark_all_read(db: Session = Depends(get_db)):
-    db.query(Alert).filter(Alert.is_read == False).update({"is_read": True})
     db.commit()
     return {"status": "ok"}
 
