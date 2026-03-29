@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Device Status Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta http-equiv="refresh" content="10"> <!-- 🔁 Auto refresh every 10 sec -->
+</head>
+<body>
+    <div class="container">
+        <h1>📡 <span>Network Device Status Monitor</span></h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Device Name</th>
+                    <th>IP Address</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Last Checked</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <td>{{ device.name }}</td>
+                    <td>{{ device.ip }}</td>
+                    <td>{{ device.location }}</td>
+                    <td class="{{ 'online' if 'ONLINE' in device.status else 'offline' }}">
+                        {{ device.status }}
+                    </td>
+                    <td>{{ device.timestamp }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="note">🔁 This page auto-refreshes every 10 seconds.</p>
+    </div>
+</body>
+</html>
