@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Bell, Search, Wifi, WifiOff, Menu } from 'lucide-react';
 import { alertsAPI } from '../../services/api';
 import { formatDate } from '../../lib/utils';
 
 export default function Header({ title, wsConnected, onMenuClick }) {
   const [unreadCount, setUnreadCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     alertsAPI.unreadCount()
@@ -55,7 +57,11 @@ export default function Header({ title, wsConnected, onMenuClick }) {
         </div>
 
         {/* Alert bell */}
-        <button className="relative p-2 rounded-xl hover:bg-[var(--bg-hover)] transition-colors">
+        <button 
+          onClick={() => navigate('/alerts')}
+          title="View Alerts"
+          className="relative p-2 rounded-xl hover:bg-[var(--bg-hover)] transition-colors"
+        >
           <Bell className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
           {unreadCount > 0 && (
             <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center count-up">
