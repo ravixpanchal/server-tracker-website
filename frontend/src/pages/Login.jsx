@@ -87,8 +87,8 @@ export default function Login() {
         >
           {/* Mobile logo header */}
           <div className="lg:hidden flex flex-col items-center text-center mb-8">
-            <div className="w-16 h-16 rounded-[1.5rem] bg-primary-100 dark:bg-primary-900 flex items-center justify-center mb-4 border border-primary-500/10">
-              <Plane className="w-8 h-8 text-primary-500" />
+            <div className="w-16 h-16 rounded-[1.5rem] bg-primary-400 flex items-center justify-center mb-4 shadow-lg shadow-primary-500/20">
+              <Plane className="w-8 h-8 text-white stroke-[2.5]" />
             </div>
             <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>AAI Server Tracker</h1>
             <p className="text-xs mt-2 px-2 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
