@@ -11,11 +11,24 @@ from schemas import AlertResponse
 router = APIRouter(prefix="/api/alerts", tags=["Alerts"])
 
 
+@router.get("/unread-count")
+def unread_count(db: Session = Depends(get_db)):
+    count = db.query(Alert).filter(Alert.is_read == False).count()
+    return {"count": count}
+
+
+@router.put("/read-all")
+def mark_all_read(db: Session = Depends(get_db)):
+    db.query(Alert).filter(Alert.is_read == False).update({"is_read": True})
+    db.commit()
+    return {"status": "ok"}
+
+
 @router.get("", response_model=List[AlertResponse])
 def get_alerts(
     severity: Optional[str] = None,
     is_read: Optional[bool] = None,
-    limit: int = Query(default=50, le=200),
+    limit: int = Query(default=100, le=200),
     db: Session = Depends(get_db),
 ):
     query = db.query(Alert).join(Server)
@@ -42,13 +55,6 @@ def get_alerts(
     return result
 
 
-@router.put("/read-all")
-def mark_all_read(db: Session = Depends(get_db)):
-    db.query(Alert).filter(Alert.is_read == False).update({"is_read": True})
-    db.commit()
-    return {"status": "ok"}
-
-
 @router.put("/{alert_id}/read")
 def mark_alert_read(alert_id: int, db: Session = Depends(get_db)):
     alert = db.query(Alert).filter(Alert.id == alert_id).first()
@@ -67,9 +73,3 @@ def delete_alert(alert_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Alert not found")
     db.delete(alert)
     db.commit()
-
-
-@router.get("/unread-count")
-def unread_count(db: Session = Depends(get_db)):
-    count = db.query(Alert).filter(Alert.is_read == False).count()
-    return {"count": count}
