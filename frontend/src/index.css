@@ -1,86 +1,54 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-accent-500: #00f0ff;
+  --color-danger-500: #f43f5e;
+}
+
 /* ═══════════════════════════════════════════════════════════════
-   AAI Aviation Server Tracker — Design System
-   IndiGo-inspired aviation theme with blue/white palette
+   AAI Aviation Server Tracker — High-Tech Dark NOC Design System
    ═══════════════════════════════════════════════════════════════ */
 
-@theme {
-  /* ── Primary palette (IndiGo Blue) ── */
-  --color-primary-50: #E6E9F5;
-  --color-primary-100: #CCD2EB;
-  --color-primary-200: #99A6D6;
-  --color-primary-300: #6679C2;
-  --color-primary-400: #334DAD;
-  --color-primary-500: #001489;
-  --color-primary-600: #001174;
-  --color-primary-700: #000E5E;
-  --color-primary-800: #000A47;
-  --color-primary-900: #000630;
-
-  /* ── Accent (Aviation Orange) ── */
-  --color-accent-400: #FF8533;
-  --color-accent-500: #FF6B00;
-  --color-accent-600: #E05E00;
-
-  /* ── Status colors ── */
-  --color-success-400: #34D399;
-  --color-success-500: #10B981;
-  --color-success-600: #059669;
-
-  --color-danger-400: #F87171;
-  --color-danger-500: #EF4444;
-  --color-danger-600: #DC2626;
-
-  --color-warning-400: #FBBF24;
-  --color-warning-500: #F59E0B;
-  --color-warning-600: #D97706;
-
-  --color-info-500: #3B82F6;
-
-  /* ── Neutral ── */
-  --color-slate-50: #F8FAFC;
-  --color-slate-100: #F1F5F9;
-  --color-slate-200: #E2E8F0;
-  --color-slate-300: #CBD5E1;
-  --color-slate-400: #94A3B8;
-  --color-slate-500: #64748B;
-  --color-slate-600: #475569;
-  --color-slate-700: #334155;
-  --color-slate-800: #1E293B;
-  --color-slate-900: #0F172A;
-  --color-slate-950: #020617;
-}
-
-/* ═══ CSS Variables for theming ═══ */
-:root {
-  --bg-primary: #F0F4FA;
-  --bg-secondary: #FFFFFF;
-  --bg-card: #FFFFFF;
-  --bg-sidebar: #001489;
-  --bg-hover: #F1F5F9;
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #94A3B8;
-  --border-color: #E2E8F0;
-  --shadow-color: rgba(0, 31, 109, 0.08);
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.3);
-}
-
-.dark {
-  --bg-primary: #0B1120;
-  --bg-secondary: #111827;
-  --bg-card: #1E293B;
-  --bg-sidebar: #0B1120;
-  --bg-hover: #1E293B;
-  --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --border-color: #334155;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --glass-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(51, 65, 85, 0.5);
+:root, .dark {
+  --bg-primary: #04091e;
+  --bg-secondary: #091233;
+  --bg-card: #091233;
+  --bg-sidebar: #050c26;
+  --bg-sidebar-active: #1d4ed8;
+  --bg-hover: #0f1c4d;
+  --text-primary: #f8fafc;
+  --text-body: #cbd5e1;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: rgba(59, 130, 246, 0.22);
+  --shadow-color: rgba(0, 5, 20, 0.7);
+  --glass-bg: rgba(9, 18, 51, 0.85);
+  --glass-border: rgba(59, 130, 246, 0.25);
+  
+  /* Color Palette Tokens - Dark NOC AAI Theme */
+  --color-surface-lowest: #020514;
+  --color-surface-low: #091233;
+  --color-surface: #04091e;
+  --color-surface-high: #0f1c4d;
+  --color-surface-highest: #1e293b;
+  --color-surface-bright: #2563eb;
+  --color-primary: #60a5fa;
+  --color-on-primary: #04091e;
+  --color-primary-container: #1d4ed8;
+  --color-on-primary-container: #e0e7ff;
+  --color-secondary: #34d399;
+  --color-on-secondary: #064e3b;
+  --color-secondary-container: #059669;
+  --color-tertiary: #fbbf24;
+  --color-tertiary-container: #d97706;
+  --color-error: #fb7185;
+  --color-error-container: #881337;
+  --color-outline: #64748b;
+  --color-outline-variant: #334155;
 }
 
 /* ═══ Base styles ═══ */
@@ -94,11 +62,14 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ═══ Custom scrollbar ═══ */
+.font-mono, .font-code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ═══ Custom Indigo scrollbar ═══ */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -107,162 +78,197 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--text-muted);
+  background: rgba(99, 102, 241, 0.3);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  background: rgba(99, 102, 241, 0.6);
 }
 
-/* ═══ Glassmorphism utilities ═══ */
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* ═══ Glassmorphism & Depth Utilities ═══ */
+.glass-panel {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 20px var(--shadow-color);
 }
 
-.glass-card {
-  background: var(--bg-card);
+.glass-panel-elevated {
+  background-color: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
-  box-shadow: 0 4px 24px var(--shadow-color);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 24px var(--shadow-color);
 }
 
-.glass-card:hover {
+.glass-panel-interactive {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel-interactive:hover {
+  background-color: var(--bg-hover);
+  border-color: rgba(99, 102, 241, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px var(--shadow-color);
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15);
 }
 
-/* ═══ Pulse animation for active servers ═══ */
-@keyframes pulse-green {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+.hover-lift {
+  transition: all 0.2s ease-in-out;
+}
+.hover-lift:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  background-color: var(--bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
 }
 
-@keyframes pulse-red {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+/* ═══ Status Dots ═══ */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.status-dot.online, .status-dot.active {
+  background-color: #34d399;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.6);
+}
+.status-dot.offline, .status-dot.down {
+  background-color: #fb7185;
+  box-shadow: 0 0 10px rgba(251, 113, 133, 0.6);
+  animation: pulse-error 2s infinite;
+}
+.status-dot.warning {
+  background-color: #fbbf24;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
 }
 
-@keyframes pulse-yellow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+@keyframes pulse-error {
+  0% { opacity: 1; box-shadow: 0 0 8px rgba(251, 113, 133, 0.5); }
+  50% { opacity: 0.6; box-shadow: 0 0 16px rgba(251, 113, 133, 0.9); }
+  100% { opacity: 1; box-shadow: 0 0 8px rgba(251, 113, 133, 0.5); }
 }
 
-.pulse-active {
-  animation: pulse-green 2s infinite;
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
 }
 
-.pulse-down {
-  animation: pulse-red 1.5s infinite;
+.pulse-dot {
+  animation: pulse 2s infinite;
 }
 
-.pulse-warning {
-  animation: pulse-yellow 2s infinite;
+/* ═══ Progress bars ═══ */
+.progress-track {
+  background-color: rgba(99, 102, 241, 0.15);
+  border-radius: 999px;
+  height: 5px;
+  width: 100%;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
 }
 
-/* ═══ Fade in animation ═══ */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ═══ Table row styles ═══ */
+.table-row-hover:hover {
+  background-color: rgba(99, 102, 241, 0.06);
 }
 
-.fade-in {
-  animation: fadeIn 0.4s ease-out;
+/* ═══ Network Topology ═══ */
+.topology-node {
+  transition: all 0.3s ease;
+}
+.topology-node:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.45);
+}
+.line-glow {
+  filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.6));
+}
+.line-error {
+  filter: drop-shadow(0 0 6px rgba(251, 113, 133, 0.8));
+  animation: pulse-error 2s infinite;
 }
 
-/* ═══ Slide in from right (for alerts) ═══ */
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
+/* ═══ Terminal log styles ═══ */
+.terminal-log-row:hover {
+  background-color: rgba(99, 102, 241, 0.08);
 }
+.log-info { color: #a5b4fc; }
+.log-warning { color: #fcd34d; }
+.log-error { color: #fda4af; }
+.log-critical { color: #fb7185; background-color: rgba(136, 19, 55, 0.35); }
 
-.slide-in-right {
-  animation: slideInRight 0.3s ease-out;
-}
-
-/* ═══ Count up animation ═══ */
-@keyframes countUp {
-  from { opacity: 0; transform: scale(0.5); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.count-up {
-  animation: countUp 0.5s ease-out;
-}
-
-/* ═══ Skeleton loading ═══ */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--bg-hover) 25%,
-    var(--border-color) 50%,
-    var(--bg-hover) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
-  border-radius: 8px;
-}
-
-/* ═══ Leaflet map overrides ═══ */
+/* ═══ Leaflet Overrides for dark NOC Indigo ═══ */
 .leaflet-container {
   border-radius: 12px;
   z-index: 1;
+  background: #090d16 !important;
 }
-
 .leaflet-popup-content-wrapper {
+  background: #131c31 !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
   border-radius: 12px !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+.leaflet-popup-tip {
+  background: #131c31 !important;
 }
 
-.dark .leaflet-popup-content-wrapper {
-  background: #1E293B !important;
-  color: #F1F5F9 !important;
+/* ═══ Responsive & Mobile Utilities ═══ */
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
-.dark .leaflet-popup-tip {
-  background: #1E293B !important;
+/* Mobile bottom nav */
+@media (max-width: 767px) {
+  .mobile-bottom-nav {
+    display: flex;
+  }
+  /* Make table cells wrap on very small screens */
+  .table-mobile-hide {
+    display: none;
+  }
 }
 
-/* ═══ Notification toast ═══ */
-@keyframes toastIn {
-  from { opacity: 0; transform: translateY(-100%); }
-  to { opacity: 1; transform: translateY(0); }
+/* Scrollable table container with scroll shadow hint */
+.scroll-x-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-x-container::-webkit-scrollbar {
+  height: 4px;
 }
 
-@keyframes toastOut {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-100%); }
+/* Prevent text overflow in narrow columns */
+.truncate-cell {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* ═══ Recharts overrides ═══ */
-.recharts-cartesian-grid-horizontal line,
-.recharts-cartesian-grid-vertical line {
-  stroke: var(--border-color) !important;
+/* Mobile-friendly minimum touch target */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
 }
 
-.recharts-text {
-  fill: var(--text-secondary) !important;
-  font-size: 12px !important;
+/* Stack flex on mobile */
+@media (max-width: 640px) {
+  .mobile-stack {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
-
-/* ═══ Status dot ═══ */
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.status-dot.active { background: #10B981; }
-.status-dot.down { background: #EF4444; }
-.status-dot.warning { background: #F59E0B; }
-.status-dot.maintenance { background: #8B5CF6; }
-.status-dot.disconnected { background: #6B7280; }

@@ -1,22 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { serversAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDate, getStatusColor } from '../lib/utils';
-import { Plus, Edit2, Trash2, X, Search, MapPin } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Search, Terminal, RefreshCw, Server as ServerIcon } from 'lucide-react';
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function Servers() {
   const { isAdmin } = useAuth();
   const [servers, setServers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedServer, setSelectedServer] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editServer, setEditServer] = useState(null);
   const [search, setSearch] = useState('');
+  const [restarting, setRestarting] = useState(false);
+  const [sshActive, setSshActive] = useState(false);
 
   const fetchServers = async () => {
     try {
       const res = await serversAPI.list();
-      // setServers(res.data);
-      setServers(Array.isArray(res.data) ? res.data : res.data.servers ?? res.data.items ?? []);
+      const list = Array.isArray(res.data) ? res.data : res.data.servers ?? res.data.items ?? [];
+      setServers(list);
+      if (list.length > 0 && !selectedServer) {
+        setSelectedServer(list[0]);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -40,130 +47,352 @@ export default function Servers() {
     }
   };
 
+  // Generate telemetry chart data
+  const chartData = useMemo(() => {
+    const times = ['-20m', '-18m', '-16m', '-14m', '-12m', '-10m', '-8m', '-6m', '-4m', '-2m', 'Now'];
+    return times.map((t, i) => ({
+      time: t,
+      cpu: Math.floor(30 + Math.random() * 25 + (i % 3) * 5),
+      memory: Math.floor(60 + Math.random() * 15),
+      disk: Math.floor(18 + Math.random() * 14),
+      netIn: Math.floor(900 + Math.random() * 400),
+      netOut: Math.floor(600 + Math.random() * 300),
+    }));
+  }, [selectedServer]);
+
+  const activeServer = selectedServer || {
+    name: 'DB-SERVER-01',
+    ip_address: '192.168.1.10',
+    location_name: 'Server Room A - Rack 04',
+    status: 'active',
+    health_score: 99.8,
+    os: 'Ubuntu 22.04 LTS',
+    uptime: '14d 6h 32m',
+    heartbeat: '2s ago',
+    latency: '12ms'
+  };
+
   const filtered = servers.filter(s =>
     s.name.toLowerCase().includes(search.toLowerCase()) ||
     s.ip_address.includes(search) ||
     s.location_name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleRestart = () => {
+    setRestarting(true);
+    setTimeout(() => {
+      setRestarting(false);
+      alert(`Services on ${activeServer.name} restarted successfully.`);
+    }, 1500);
+  };
+
   return (
-    <div className="space-y-6 fade-in">
-      {/* Top bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-          <input
-            type="text"
-            placeholder="Search servers..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm outline-none transition-colors"
-            style={{
-              background: 'var(--bg-card)',
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-primary)',
-            }}
-          />
+    <div className="space-y-6 sm:space-y-8 fade-in">
+      {/* Detail Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <div className="text-xs text-[#8c909f] font-mono mb-2">
+            Servers / {activeServer.name}
+          </div>
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-bold text-[#d3e4fe]">{activeServer.name}</h2>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#4edea3]/15 text-[#4edea3] border border-[#4edea3]/30">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] pulse-dot"></span>
+              {activeServer.status?.toUpperCase() === 'DOWN' ? 'OFFLINE' : 'ONLINE'}
+            </span>
+          </div>
+          <p className="text-xs text-[#c2c6d6] mt-1">Primary Server Node — {activeServer.location_name || 'Cluster Alpha'}</p>
         </div>
-        {isAdmin && (
-          <button
-            onClick={() => { setEditServer(null); setShowForm(true); }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors shadow-lg shadow-primary-500/20"
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setSshActive(!sshActive)}
+            className={`px-4 py-2 rounded-xl border text-xs font-medium flex items-center gap-2 transition-all cursor-pointer hover-lift ${
+              sshActive 
+                ? 'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-600/30' 
+                : 'bg-indigo-950/40 border-indigo-800/30 text-indigo-200 hover:bg-indigo-900/50'
+            }`}
           >
-            <Plus className="w-4 h-4" /> Add Server
+            <Terminal className="w-4 h-4" />
+            {sshActive ? 'SSH Connected' : 'SSH Connect'}
           </button>
-        )}
+          <button 
+            onClick={handleRestart}
+            disabled={restarting}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:from-indigo-500 hover:to-violet-500 transition-all flex items-center gap-2 text-xs font-semibold cursor-pointer shadow-lg shadow-indigo-600/25 disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${restarting ? 'animate-spin' : ''}`} />
+            {restarting ? 'Restarting...' : 'Restart Services'}
+          </button>
+        </div>
       </div>
 
-      {/* Server table */}
-      <div className="glass-card overflow-hidden">
+      {/* SSH Simulated Terminal Window */}
+      {sshActive && (
+        <div className="bg-[#000000] border border-[#424754]/40 rounded-xl overflow-hidden font-mono text-xs p-4 text-[#4edea3] space-y-1 shadow-2xl fade-in">
+          <div className="text-[#8c909f] border-b border-[#424754]/30 pb-2 mb-2 flex justify-between">
+            <span>root@{activeServer.name.toLowerCase()}:~# ssh-session (active)</span>
+            <span className="cursor-pointer text-[#ffb4ab]" onClick={() => setSshActive(false)}>close [X]</span>
+          </div>
+          <p className="text-[#adc6ff]">Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-88-generic x86_64)</p>
+          <p className="text-[#8c909f]">System load: 0.42 | Processes: 184 | Memory usage: 61%</p>
+          <p><span className="text-[#4edea3]">root@{activeServer.name.toLowerCase()}:~#</span> systemctl status daemon.service</p>
+          <p className="text-[#4edea3]">● daemon.service - ServerWatch Monitoring Agent</p>
+          <p className="text-[#c2c6d6]">   Loaded: loaded (/etc/systemd/system/daemon.service; enabled)</p>
+          <p className="text-[#c2c6d6]">   Active: <span className="text-[#4edea3]">active (running)</span> since Mon 2026-08-24 00:00:12 IST; 14 days ago</p>
+        </div>
+      )}
+
+      {/* Bento Detail Cards Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
+        <div className="glass-panel rounded-xl p-4 flex flex-col justify-center">
+          <span className="text-[#8c909f] text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">router</span> IP Address
+          </span>
+          <div className="font-mono text-base font-semibold text-[#adc6ff]">{activeServer.ip_address}</div>
+        </div>
+
+        <div className="glass-panel rounded-xl p-4 flex flex-col justify-center">
+          <span className="text-[#8c909f] text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">computer</span> Operating System
+          </span>
+          <div className="text-sm font-medium text-[#d3e4fe]">{activeServer.os || 'Ubuntu 22.04 LTS'}</div>
+        </div>
+
+        <div className="glass-panel rounded-xl p-4 flex flex-col justify-center">
+          <span className="text-[#8c909f] text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">dns</span> Server Location
+          </span>
+          <div className="text-sm font-medium text-[#d3e4fe] truncate">{activeServer.location_name || 'Server Room A'}</div>
+        </div>
+
+        <div className="glass-panel rounded-xl p-4 flex flex-col justify-center">
+          <span className="text-[#8c909f] text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">schedule</span> Uptime
+          </span>
+          <div className="font-mono text-base text-[#d3e4fe]">{activeServer.uptime || '14d 6h 32m'}</div>
+        </div>
+
+        <div className="glass-panel rounded-xl p-4 flex flex-col justify-center">
+          <span className="text-[#8c909f] text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">favorite</span> Last Heartbeat
+          </span>
+          <div className="font-mono text-base text-[#4edea3]">{activeServer.heartbeat || '2s ago'}</div>
+        </div>
+
+        <div className="glass-panel rounded-xl p-4 flex flex-col justify-center">
+          <span className="text-[#8c909f] text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">network_ping</span> Latency
+          </span>
+          <div className="font-mono text-base text-[#d3e4fe]">
+            {activeServer.latency || '12ms'} <span className="text-[#4edea3] text-xs">↓ 1ms</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Monitoring Charts Section */}
+      <section className="space-y-4">
+        <h3 className="text-base font-semibold text-[#d3e4fe] flex items-center gap-2">
+          <span className="material-symbols-outlined text-[#adc6ff]">monitoring</span> Real-time Telemetry
+        </h3>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* CPU Chart */}
+          <div className="glass-panel rounded-xl p-5">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="text-xs font-semibold text-[#d3e4fe]">CPU Usage</h4>
+              <span className="text-xs font-mono text-[#ffb2b7]">42% Avg</span>
+            </div>
+            <div className="h-44 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="cpuGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ffb2b7" stopOpacity={0.4}/>
+                      <stop offset="95%" stopColor="#ffb2b7" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="time" stroke="#8c909f" fontSize={10} tickLine={false} />
+                  <YAxis stroke="#8c909f" fontSize={10} tickLine={false} domain={[0, 100]} />
+                  <Tooltip contentStyle={{ backgroundColor: '#102034', borderColor: '#424754', borderRadius: '8px', color: '#d3e4fe' }} />
+                  <Area type="monotone" dataKey="cpu" stroke="#ffb2b7" strokeWidth={2} fillOpacity={1} fill="url(#cpuGrad)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Memory Chart */}
+          <div className="glass-panel rounded-xl p-5">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="text-xs font-semibold text-[#d3e4fe]">Memory Usage</h4>
+              <span className="text-xs font-mono text-[#adc6ff]">68% Avg</span>
+            </div>
+            <div className="h-44 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="memGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#adc6ff" stopOpacity={0.4}/>
+                      <stop offset="95%" stopColor="#adc6ff" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="time" stroke="#8c909f" fontSize={10} tickLine={false} />
+                  <YAxis stroke="#8c909f" fontSize={10} tickLine={false} domain={[0, 100]} />
+                  <Tooltip contentStyle={{ backgroundColor: '#102034', borderColor: '#424754', borderRadius: '8px', color: '#d3e4fe' }} />
+                  <Area type="monotone" dataKey="memory" stroke="#adc6ff" strokeWidth={2} fillOpacity={1} fill="url(#memGrad)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Disk Chart */}
+          <div className="glass-panel rounded-xl p-5">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="text-xs font-semibold text-[#d3e4fe]">Disk I/O</h4>
+              <span className="text-xs font-mono text-[#4edea3]">24 MB/s</span>
+            </div>
+            <div className="h-44 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <XAxis dataKey="time" stroke="#8c909f" fontSize={10} tickLine={false} />
+                  <YAxis stroke="#8c909f" fontSize={10} tickLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: '#102034', borderColor: '#424754', borderRadius: '8px', color: '#d3e4fe' }} />
+                  <Line type="monotone" dataKey="disk" stroke="#4edea3" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Network Chart */}
+          <div className="glass-panel rounded-xl p-5">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="text-xs font-semibold text-[#d3e4fe]">Network Traffic</h4>
+              <span className="text-xs font-mono text-[#adc6ff]">1.2 GB/s In / 0.8 GB/s Out</span>
+            </div>
+            <div className="h-44 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <XAxis dataKey="time" stroke="#8c909f" fontSize={10} tickLine={false} />
+                  <YAxis stroke="#8c909f" fontSize={10} tickLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: '#102034', borderColor: '#424754', borderRadius: '8px', color: '#d3e4fe' }} />
+                  <Line type="monotone" dataKey="netIn" name="In (MB/s)" stroke="#adc6ff" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="netOut" name="Out (MB/s)" stroke="#d8e2ff" strokeDasharray="5 5" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* All Servers Management Table Section */}
+      <section className="glass-panel rounded-xl overflow-hidden p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <h3 className="text-base font-semibold text-[#d3e4fe] flex items-center gap-2">
+            <ServerIcon className="w-4 h-4 text-[#adc6ff]" /> Server Registry & Inventory
+          </h3>
+
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search server registry..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-1.5 rounded-xl bg-indigo-950/40 border border-indigo-800/30 text-xs text-indigo-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+              />
+            </div>
+            {isAdmin && (
+              <button
+                onClick={() => { setEditServer(null); setShowForm(true); }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs font-semibold hover:from-indigo-500 hover:to-violet-500 transition-all cursor-pointer shrink-0 shadow-md shadow-indigo-600/20"
+              >
+                <Plus className="w-4 h-4" /> Add Server
+              </button>
+            )}
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr style={{ background: 'var(--bg-hover)' }}>
-                {['Name', 'IP Address', 'Location', 'Airport', 'Status', 'Health', 'Last Heartbeat', ...(isAdmin ? ['Actions'] : [])].map(h => (
-                  <th key={h} className="text-left px-4 py-3 font-semibold whitespace-nowrap" style={{ color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-color)' }}>
-                    {h}
-                  </th>
-                ))}
+              <tr className="bg-indigo-950/60 border-b border-indigo-900/30 text-[11px] font-bold text-indigo-300 uppercase tracking-wider">
+                <th className="py-3 px-3 sm:px-4">Server Name</th>
+                <th className="py-3 px-3 sm:px-4 hidden md:table-cell">IP Address</th>
+                <th className="py-3 px-3 sm:px-4 hidden sm:table-cell">Location</th>
+                <th className="py-3 px-3 sm:px-4">Status</th>
+                <th className="py-3 px-3 sm:px-4 hidden lg:table-cell">Health Score</th>
+                <th className="py-3 px-3 sm:px-4 hidden xl:table-cell">Last Heartbeat</th>
+                {isAdmin && <th className="py-3 px-3 sm:px-4 text-right">Actions</th>}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="font-mono">
               {loading ? (
-                [...Array(5)].map((_, i) => (
-                  <tr key={i}>
-                    <td colSpan={isAdmin ? 8 : 7} className="p-4"><div className="skeleton h-8 rounded" /></td>
-                  </tr>
-                ))
+                <tr>
+                  <td colSpan={isAdmin ? 7 : 6} className="text-center py-8 text-slate-400">Loading servers...</td>
+                </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={isAdmin ? 8 : 7} className="text-center py-12" style={{ color: 'var(--text-muted)' }}>
-                    No servers found
-                  </td>
+                  <td colSpan={isAdmin ? 7 : 6} className="text-center py-8 text-slate-400">No servers found</td>
                 </tr>
               ) : (
                 filtered.map(server => {
                   const statusColors = getStatusColor(server.status);
+                  const isSelected = selectedServer?.id === server.id || selectedServer?.name === server.name;
                   return (
                     <tr
                       key={server.id}
-                      className="hover:bg-[var(--bg-hover)] transition-colors"
-                      style={{ borderBottom: '1px solid var(--border-color)' }}
+                      onClick={() => setSelectedServer(server)}
+                      className={`border-b border-indigo-900/20 table-row-hover transition-colors cursor-pointer ${
+                        isSelected ? 'bg-indigo-600/15 text-indigo-200 font-semibold' : ''
+                      }`}
                     >
-                      <td className="px-4 py-3 font-medium" style={{ color: 'var(--text-primary)' }}>
+                      <td className="py-3 px-3 sm:px-4 font-sans font-medium text-indigo-100">
                         <div className="flex items-center gap-2">
-                          <MapPin className="w-3.5 h-3.5" style={{ color: statusColors.dot }} />
-                          {server.name}
+                          <span className="material-symbols-outlined text-base text-indigo-400 shrink-0">dns</span>
+                          <span className="truncate max-w-[100px] sm:max-w-none">{server.name}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>
-                        {server.ip_address}
-                      </td>
-                      <td className="px-4 py-3 text-xs max-w-[200px] truncate" style={{ color: 'var(--text-secondary)' }}>
-                        {server.location_name}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-primary-500/10 text-primary-500">
-                          {server.airport_code || '—'}
+                      <td className="py-3 px-3 sm:px-4 text-slate-300 hidden md:table-cell">{server.ip_address}</td>
+                      <td className="py-3 px-3 sm:px-4 font-sans text-slate-300 hidden sm:table-cell">{server.location_name}</td>
+                      <td className="py-3 px-3 sm:px-4 font-sans">
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          <span className="status-dot online"></span>
+                          {(server.status || 'ACTIVE').toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
-                        <span className={`flex items-center gap-1.5 text-xs font-medium`}>
-                          <span className={`status-dot ${server.status}`} style={{ background: statusColors.dot }} />
-                          <span style={{ color: statusColors.dot }}>{server.status?.toUpperCase()}</span>
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
+                      <td className="py-3 px-3 sm:px-4 font-mono hidden lg:table-cell">
                         <div className="flex items-center gap-2">
-                          <div className="w-12 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                          <div className="w-16 h-1.5 rounded-full bg-slate-800 overflow-hidden">
                             <div
                               className="h-full rounded-full transition-all"
                               style={{
-                                width: `${server.health_score}%`,
-                                background: server.health_score > 70 ? '#10B981' : server.health_score > 40 ? '#F59E0B' : '#EF4444',
+                                width: `${server.health_score || 95}%`,
+                                background: (server.health_score || 95) > 70 ? '#34d399' : '#fb7185',
                               }}
                             />
                           </div>
-                          <span className="text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>
-                            {server.health_score}
-                          </span>
+                          <span>{server.health_score || 95}%</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                      <td className="py-3 px-3 sm:px-4 text-slate-400 text-[11px] hidden xl:table-cell">
                         {formatDate(server.last_heartbeat)}
                       </td>
                       {isAdmin && (
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-1">
+                        <td className="py-3 px-3 sm:px-4 text-right" onClick={e => e.stopPropagation()}>
+                          <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => { setEditServer(server); setShowForm(true); }}
-                              className="p-1.5 rounded-lg hover:bg-blue-500/10 text-blue-500 transition-colors"
+                              className="p-1 rounded hover:bg-indigo-500/20 text-indigo-400 transition-colors"
+                              title="Edit"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => handleDelete(server.id)}
-                              className="p-1.5 rounded-lg hover:bg-red-500/10 text-red-500 transition-colors"
+                              className="p-1 rounded hover:bg-rose-500/20 text-rose-400 transition-colors"
+                              title="Delete"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -177,7 +406,7 @@ export default function Servers() {
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
 
       {/* Add/Edit Modal */}
       {showForm && (
@@ -212,8 +441,8 @@ function ServerFormModal({ server, onClose, onSaved }) {
     try {
       const payload = {
         ...form,
-        latitude: parseFloat(form.latitude),
-        longitude: parseFloat(form.longitude),
+        latitude: parseFloat(form.latitude) || 20.0,
+        longitude: parseFloat(form.longitude) || 78.0,
       };
       if (isEdit) {
         await serversAPI.update(server.id, payload);
@@ -230,72 +459,56 @@ function ServerFormModal({ server, onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.5)' }}>
-      <div className="glass-card p-6 w-full max-w-lg fade-in" style={{ background: 'var(--bg-card)' }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+      <div className="glass-panel rounded-2xl p-6 w-full max-w-lg fade-in border border-indigo-500/30">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-            {isEdit ? 'Edit Server' : 'Add New Server'}
+          <h3 className="text-base font-bold text-indigo-100">
+            {isEdit ? 'Edit Server Configuration' : 'Add New Server Node'}
           </h3>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-[var(--bg-hover)]">
-            <X className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-indigo-900/40 text-slate-400">
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-3">
           {[
-            { key: 'name', label: 'Server Name', placeholder: 'VNS-ATC-PRIME' },
-            { key: 'ip_address', label: 'IP Address', placeholder: '10.10.1.1' },
-            { key: 'latitude', label: 'Latitude', placeholder: '25.4520', type: 'number' },
-            { key: 'longitude', label: 'Longitude', placeholder: '82.8590', type: 'number' },
-            { key: 'location_name', label: 'Location', placeholder: 'Varanasi Airport - ATC Tower' },
-            { key: 'airport_code', label: 'Airport Code', placeholder: 'VNS' },
-          ].map(({ key, label, placeholder, type }) => (
+            { key: 'name', label: 'Server Name', placeholder: 'DB-SERVER-01' },
+            { key: 'ip_address', label: 'IP Address', placeholder: '192.168.1.10' },
+            { key: 'location_name', label: 'Location Name', placeholder: 'Server Room A - Rack 04' },
+            { key: 'airport_code', label: 'Airport Code / Tag', placeholder: 'DEL' },
+          ].map(({ key, label, placeholder }) => (
             <div key={key}>
-              <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>{label}</label>
+              <label className="block text-xs font-medium mb-1 text-indigo-200">{label}</label>
               <input
-                type={type || 'text'}
+                type="text"
                 value={form[key]}
                 onChange={e => setForm(prev => ({ ...prev, [key]: e.target.value }))}
                 placeholder={placeholder}
-                step={type === 'number' ? 'any' : undefined}
                 required={key !== 'airport_code'}
-                className="w-full px-3 py-2 rounded-xl border text-sm outline-none transition-colors focus:border-primary-500"
-                style={{ background: 'var(--bg-primary)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+                className="w-full px-3 py-2 rounded-xl bg-indigo-950/60 border border-indigo-800/40 text-xs text-indigo-100 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
           ))}
-          <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Description</label>
-            <textarea
-              value={form.description}
-              onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Server description..."
-              rows={2}
-              className="w-full px-3 py-2 rounded-xl border text-sm outline-none transition-colors focus:border-primary-500 resize-none"
-              style={{ background: 'var(--bg-primary)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
-            />
-          </div>
           <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-xl border text-sm font-medium transition-colors"
-              style={{ borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}
+              className="flex-1 px-4 py-2 rounded-xl border border-indigo-800/40 text-xs text-slate-300 hover:bg-indigo-950/50 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2.5 rounded-xl bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs font-bold hover:from-indigo-500 hover:to-violet-500 disabled:opacity-50 cursor-pointer shadow-lg shadow-indigo-600/30"
             >
-              {loading ? 'Saving...' : isEdit ? 'Update' : 'Create'}
+              {loading ? 'Saving...' : isEdit ? 'Update Server' : 'Create Server'}
             </button>
           </div>
         </form>

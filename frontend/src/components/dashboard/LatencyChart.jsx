@@ -28,12 +28,12 @@ export default function LatencyChart({ data }) {
         <AreaChart data={chartData}>
           <defs>
             <linearGradient id="latAvgGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
+              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.35} />
+              <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="latMaxGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#EF4444" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="#EF4444" stopOpacity={0} />
+              <stop offset="5%" stopColor="#fb7185" stopOpacity={0.2} />
+              <stop offset="95%" stopColor="#fb7185" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
@@ -59,16 +59,16 @@ export default function LatencyChart({ data }) {
           <Area
             type="monotone"
             dataKey="max_latency"
-            stroke="#EF4444"
-            strokeWidth={1}
+            stroke="#fb7185"
+            strokeWidth={1.5}
             fill="url(#latMaxGrad)"
             strokeDasharray="3 3"
           />
           <Area
             type="monotone"
             dataKey="avg_latency"
-            stroke="#3B82F6"
-            strokeWidth={2}
+            stroke="#6366f1"
+            strokeWidth={2.5}
             fill="url(#latAvgGrad)"
           />
         </AreaChart>

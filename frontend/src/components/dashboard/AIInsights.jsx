@@ -11,19 +11,19 @@ export default function AIInsights({ insights }) {
   return (
     <div className="glass-card p-4">
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-7 h-7 rounded-lg bg-purple-500/15 flex items-center justify-center">
-          <Brain className="w-4 h-4 text-purple-500" />
+        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500/20 to-violet-500/20 flex items-center justify-center border border-indigo-500/30">
+          <Brain className="w-4 h-4 text-indigo-400" />
         </div>
         <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
           AI Insights
         </h3>
-        <Zap className="w-3 h-3 text-warning-500" />
+        <Zap className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
       </div>
 
       <div className="space-y-2 overflow-y-auto" style={{ maxHeight: '300px' }}>
         {(!insights || insights.length === 0) ? (
           <div className="text-center py-6">
-            <Brain className="w-8 h-8 mx-auto mb-2 text-purple-400/40" />
+            <Brain className="w-8 h-8 mx-auto mb-2 text-indigo-400/40" />
             <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
               AI is analyzing server patterns...
             </p>
@@ -56,9 +56,9 @@ export default function AIInsights({ insights }) {
                   </p>
                   {insight.confidence > 0 && (
                     <div className="flex items-center gap-1 mt-1.5">
-                      <div className="w-16 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                      <div className="w-16 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-purple-500"
+                          className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500"
                           style={{ width: `${insight.confidence * 100}%` }}
                         />
                       </div>
