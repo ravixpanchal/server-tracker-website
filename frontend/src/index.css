@@ -1,54 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-accent-500: #00f0ff;
-  --color-danger-500: #f43f5e;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --color-primary-400: #687cff;
+  --color-primary-500: #283acb;
+  --color-primary-600: #1c2ca7;
+  --color-primary-700: #172483;
+  --color-accent-500: #4bbbed;
+  --color-danger-500: #be123c;
+  --color-surface-lowest: #ffffff;
+  --color-surface-low: #ffffff;
+  --color-surface: #f4f6fd;
+  --color-surface-high: #edf0fc;
+  --color-surface-highest: #e3e9fb;
+  --color-surface-bright: #ccd9ff;
+  --color-primary: #283acb;
+  --color-on-primary: #fff;
+  --color-primary-container: #dfe6ff;
+  --color-on-primary-container: #1b2b97;
+  --color-secondary: #047857;
+  --color-on-secondary: #fff;
+  --color-secondary-container: #d9f6e8;
+  --color-tertiary: #92400e;
+  --color-tertiary-container: #fff0cf;
+  --color-error: #be123c;
+  --color-error-container: #fce7ee;
+  --color-outline: #5e6a87;
+  --color-outline-variant: #dbe2f2;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   AAI Aviation Server Tracker — High-Tech Dark NOC Design System
-   ═══════════════════════════════════════════════════════════════ */
-
-:root, .dark {
-  --bg-primary: #04091e;
-  --bg-secondary: #091233;
-  --bg-card: #091233;
-  --bg-sidebar: #050c26;
-  --bg-sidebar-active: #1d4ed8;
-  --bg-hover: #0f1c4d;
-  --text-primary: #f8fafc;
-  --text-body: #cbd5e1;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border-color: rgba(59, 130, 246, 0.22);
-  --shadow-color: rgba(0, 5, 20, 0.7);
-  --glass-bg: rgba(9, 18, 51, 0.85);
-  --glass-border: rgba(59, 130, 246, 0.25);
-  
-  /* Color Palette Tokens - Dark NOC AAI Theme */
-  --color-surface-lowest: #020514;
-  --color-surface-low: #091233;
-  --color-surface: #04091e;
-  --color-surface-high: #0f1c4d;
-  --color-surface-highest: #1e293b;
-  --color-surface-bright: #2563eb;
-  --color-primary: #60a5fa;
-  --color-on-primary: #04091e;
-  --color-primary-container: #1d4ed8;
-  --color-on-primary-container: #e0e7ff;
-  --color-secondary: #34d399;
-  --color-on-secondary: #064e3b;
-  --color-secondary-container: #059669;
-  --color-tertiary: #fbbf24;
-  --color-tertiary-container: #d97706;
-  --color-error: #fb7185;
-  --color-error-container: #881337;
-  --color-outline: #64748b;
-  --color-outline-variant: #334155;
+:root {
+  color-scheme: light;
+  --app-header-height: calc(4rem + env(safe-area-inset-top));
+  --bg-primary: #f4f6fd;
+  --bg-card: #ffffff;
+  --bg-tint: #edf0fc;
+  --bg-hover: #e8edff;
+  --text-primary: #151e43;
+  --text-body: #354160;
+  --text-secondary: #4d5977;
+  --text-muted: #5e6a87;
+  --border-color: #dbe2f2;
+  --shadow-color: rgb(31 44 111 / 8%);
 }
 
 /* ═══ Base styles ═══ */
@@ -85,41 +78,45 @@ body {
   background: rgba(99, 102, 241, 0.6);
 }
 
-/* ═══ Glassmorphism & Depth Utilities ═══ */
-.glass-panel {
-  background-color: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 4px 20px var(--shadow-color);
-}
-
-.glass-panel-elevated {
+.glass-panel, .glass-panel-elevated {
   background-color: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
-  box-shadow: 0 6px 24px var(--shadow-color);
+  box-shadow: 0 4px 16px var(--shadow-color);
+  min-width: 0;
 }
 
-.glass-panel-interactive {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+.glass-panel-interactive, .hover-lift {
+  transition: background-color 160ms ease, border-color 160ms ease;
 }
-.glass-panel-interactive:hover {
+.glass-panel-interactive:hover, .hover-lift:hover {
   background-color: var(--bg-hover);
-  border-color: rgba(99, 102, 241, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15);
+  border-color: #aebcf1;
 }
 
-.hover-lift {
-  transition: all 0.2s ease-in-out;
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid #4a62eb;
+  outline-offset: 3px;
 }
-.hover-lift:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  background-color: var(--bg-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
+
+.aviation-hero {
+  position: relative;
+  overflow: hidden;
+  color: white;
+  background: linear-gradient(115deg, #192378 12%, #283acb 75%, #4260e5);
+}
+
+.aviation-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-radial-gradient(ellipse at 100% 100%, transparent 0 31px, rgb(172 210 255 / 25%) 32px 33px, transparent 34px 55px);
+  mask-image: linear-gradient(to right, transparent 35%, black);
+}
+
+.log-console {
+  background-color: #101943;
+  color: #e3eaff;
 }
 
 /* ═══ Status Dots ═══ */
@@ -203,21 +200,21 @@ body {
 .log-error { color: #fda4af; }
 .log-critical { color: #fb7185; background-color: rgba(136, 19, 55, 0.35); }
 
-/* ═══ Leaflet Overrides for dark NOC Indigo ═══ */
+/* ═══ Leaflet map surfaces ═══ */
 .leaflet-container {
   border-radius: 12px;
   z-index: 1;
-  background: #090d16 !important;
+  background: var(--bg-tint) !important;
 }
 .leaflet-popup-content-wrapper {
-  background: #131c31 !important;
-  color: #e2e8f0 !important;
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
   border: 1px solid rgba(99, 102, 241, 0.3) !important;
   border-radius: 12px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 10px 25px -5px var(--shadow-color) !important;
 }
 .leaflet-popup-tip {
-  background: #131c31 !important;
+  background: var(--bg-card) !important;
 }
 
 /* ═══ Responsive & Mobile Utilities ═══ */
@@ -270,5 +267,12 @@ body {
   .mobile-stack {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in, .pulse-dot, .status-dot, .line-error {
+    animation: none;
   }
 }

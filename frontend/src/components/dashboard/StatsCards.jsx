@@ -55,7 +55,7 @@ export default function StatsCards({ summary }) {
         return (
           <div
             key={card.label}
-            className={`rounded-2xl bg-gradient-to-br ${card.color} p-4 shadow-lg fade-in`}
+            className={`rounded-2xl bg-gradient-to-br ${card.color} p-4 shadow-sm fade-in`}
             style={{ animationDelay: `${i * 0.05}s` }}
           >
             <div className="flex items-center justify-between mb-3">

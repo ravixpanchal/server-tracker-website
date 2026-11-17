@@ -127,14 +127,14 @@ export default function NetworkTopology() {
   };
 
   return (
-    <div className="relative overflow-hidden flex flex-col md:flex-row rounded-2xl border border-indigo-900/30 bg-[#070b14]" style={{ minHeight: 'calc(100vh - 140px)' }}>
+    <div className="relative overflow-hidden flex flex-col xl:flex-row rounded-2xl border border-[var(--border-color)] bg-[var(--bg-primary)]" style={{ minHeight: 'calc(100vh - 140px)' }}>
       {/* Mobile scroll hint */}
-      <div className="md:hidden flex items-center gap-2 px-3 py-2 bg-indigo-950/60 border-b border-indigo-900/30 text-xs text-slate-400 font-mono shrink-0">
-        <span className="material-symbols-outlined text-[14px] text-indigo-400">swipe</span>
+      <div className="xl:hidden flex items-center gap-2 px-3 py-2 bg-[var(--bg-tint)] border-b border-[var(--border-color)] text-xs text-[var(--text-secondary)] font-mono shrink-0">
+        <span className="material-symbols-outlined text-[14px] text-primary-600">swipe</span>
         Scroll horizontally to explore the topology map
       </div>
       {/* Topology Canvas Area */}
-      <div className="flex-1 relative w-full h-full overflow-auto" style={{ minHeight: '480px' }}>
+      <div tabIndex={0} role="region" aria-label="Scrollable network diagram" className="flex-1 relative min-w-0 w-full overflow-auto overscroll-x-contain" style={{ minHeight: '480px' }}>
         {/* Grid Background Pattern */}
         <div 
           className="absolute inset-0 opacity-15 pointer-events-none" 
@@ -154,7 +154,7 @@ export default function NetworkTopology() {
         </svg>
 
         {/* Canvas Legend */}
-        <div className="absolute top-4 left-4 z-10 glass-panel rounded-xl p-3 text-xs font-mono flex items-center gap-4 text-slate-300 border border-indigo-900/30">
+        <div className="absolute top-4 left-4 z-10 glass-panel rounded-xl p-3 text-xs font-mono flex items-center gap-4 text-[var(--text-secondary)] border border-[var(--border-color)]">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
             <span>Healthy Link</span>
@@ -170,7 +170,7 @@ export default function NetworkTopology() {
         </div>
 
         {/* Nodes Grid */}
-        <div className="relative w-full h-full min-w-[850px] min-h-[480px]">
+        <div className="relative w-full h-full min-w-[900px] min-h-[480px]">
           {/* Internet */}
           <div 
             onClick={() => setSelectedNodeId('internet')}
@@ -178,10 +178,10 @@ export default function NetworkTopology() {
               selectedNodeId === 'internet' ? 'scale-110 ring-2 ring-indigo-400 rounded-full' : ''
             }`}
           >
-            <div className="w-14 h-14 bg-indigo-950/80 border border-indigo-700/40 rounded-full flex items-center justify-center text-indigo-100 shadow-lg">
-              <span className="material-symbols-outlined text-3xl text-emerald-400">public</span>
+            <div className="w-14 h-14 bg-[var(--bg-tint)] border border-[var(--border-color)] rounded-full flex items-center justify-center text-primary-600 shadow-sm">
+              <span className="material-symbols-outlined text-3xl text-emerald-700">public</span>
             </div>
-            <span className="text-[10px] font-bold text-indigo-200 bg-slate-950/90 px-2 py-0.5 rounded border border-indigo-800/40 font-mono">INTERNET</span>
+            <span className="text-[10px] font-bold text-primary-600 bg-[var(--bg-tint)] px-2 py-0.5 rounded border border-[var(--border-color)] font-mono">INTERNET</span>
           </div>
 
           {/* Firewall */}
@@ -191,10 +191,10 @@ export default function NetworkTopology() {
               selectedNodeId === 'firewall' ? 'scale-110 ring-2 ring-indigo-400 rounded-xl' : ''
             }`}
           >
-            <div className="w-14 h-14 bg-indigo-950/80 border border-indigo-700/40 rounded-xl flex items-center justify-center text-indigo-100 shadow-lg">
-              <span className="material-symbols-outlined text-3xl text-emerald-400">security</span>
+            <div className="w-14 h-14 bg-[var(--bg-tint)] border border-[var(--border-color)] rounded-xl flex items-center justify-center text-primary-600 shadow-sm">
+              <span className="material-symbols-outlined text-3xl text-emerald-700">security</span>
             </div>
-            <span className="text-[10px] font-bold text-indigo-200 bg-slate-950/90 px-2 py-0.5 rounded border border-indigo-800/40 font-mono">FW-PRI-01</span>
+            <span className="text-[10px] font-bold text-primary-600 bg-[var(--bg-tint)] px-2 py-0.5 rounded border border-[var(--border-color)] font-mono">FW-PRI-01</span>
           </div>
 
           {/* Core Switch */}
@@ -204,11 +204,11 @@ export default function NetworkTopology() {
               selectedNodeId === 'core' ? 'scale-110 ring-2 ring-indigo-400 rounded-xl' : ''
             }`}
           >
-            <div className="w-16 h-16 bg-indigo-950/80 border border-indigo-700/40 rounded-xl flex items-center justify-center text-indigo-100 shadow-lg relative">
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-950"></div>
-              <span className="material-symbols-outlined text-3xl text-emerald-400">router</span>
+            <div className="w-16 h-16 bg-[var(--bg-tint)] border border-[var(--border-color)] rounded-xl flex items-center justify-center text-primary-600 shadow-sm relative">
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[var(--border-color)]"></div>
+              <span className="material-symbols-outlined text-3xl text-emerald-700">router</span>
             </div>
-            <span className="text-[10px] font-bold text-indigo-200 bg-slate-950/90 px-2 py-0.5 rounded border border-indigo-800/40 font-mono">SW-CORE-01</span>
+            <span className="text-[10px] font-bold text-primary-600 bg-[var(--bg-tint)] px-2 py-0.5 rounded border border-[var(--border-color)] font-mono">SW-CORE-01</span>
           </div>
 
           {/* Distribution Switch (Warning) */}
@@ -218,11 +218,11 @@ export default function NetworkTopology() {
               selectedNodeId === 'dist' ? 'scale-110 ring-2 ring-amber-400 rounded-xl' : ''
             }`}
           >
-            <div className="w-16 h-16 bg-indigo-950/80 border border-amber-500/50 rounded-xl flex items-center justify-center text-indigo-100 shadow-lg relative bg-amber-500/10">
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-slate-950 animate-pulse"></div>
-              <span className="material-symbols-outlined text-3xl text-amber-400">device_hub</span>
+            <div className="w-16 h-16 bg-[var(--bg-tint)] border border-amber-500/50 rounded-xl flex items-center justify-center text-primary-600 shadow-sm relative bg-amber-500/10">
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-[var(--border-color)] animate-pulse"></div>
+              <span className="material-symbols-outlined text-3xl text-amber-700">device_hub</span>
             </div>
-            <span className="text-[10px] font-bold text-amber-400 bg-slate-950/90 px-2 py-0.5 rounded border border-amber-500/30 font-mono">SW-DIST-A</span>
+            <span className="text-[10px] font-bold text-amber-700 bg-[var(--bg-tint)] px-2 py-0.5 rounded border border-amber-500/30 font-mono">SW-DIST-A</span>
           </div>
 
           {/* DB Server */}
@@ -232,10 +232,10 @@ export default function NetworkTopology() {
               selectedNodeId === 'db' ? 'scale-110 ring-2 ring-indigo-400 rounded-xl' : ''
             }`}
           >
-            <div className="w-14 h-14 bg-indigo-950/80 border border-indigo-700/40 rounded-xl flex items-center justify-center text-indigo-100 shadow-lg">
-              <span className="material-symbols-outlined text-2xl text-emerald-400">database</span>
+            <div className="w-14 h-14 bg-[var(--bg-tint)] border border-[var(--border-color)] rounded-xl flex items-center justify-center text-primary-600 shadow-sm">
+              <span className="material-symbols-outlined text-2xl text-emerald-700">database</span>
             </div>
-            <span className="text-[10px] font-bold text-indigo-200 bg-slate-950/90 px-2 py-0.5 rounded border border-indigo-800/40 font-mono">DB-PROD-1</span>
+            <span className="text-[10px] font-bold text-primary-600 bg-[var(--bg-tint)] px-2 py-0.5 rounded border border-[var(--border-color)] font-mono">DB-PROD-1</span>
           </div>
 
           {/* CCTV Server (Offline) */}
@@ -245,11 +245,11 @@ export default function NetworkTopology() {
               selectedNodeId === 'cctv' ? 'scale-110 ring-2 ring-rose-400 rounded-xl' : ''
             }`}
           >
-            <div className="w-14 h-14 bg-rose-950/30 border border-rose-500 rounded-xl flex items-center justify-center text-rose-400 shadow-lg relative">
-              <span className="material-symbols-outlined text-2xl text-rose-400">videocam_off</span>
+            <div className="w-14 h-14 bg-rose-50 border border-rose-500 rounded-xl flex items-center justify-center text-rose-700 shadow-sm relative">
+              <span className="material-symbols-outlined text-2xl text-rose-700">videocam_off</span>
             </div>
-            <span className="text-[10px] font-bold text-rose-400 bg-slate-950/90 px-2 py-0.5 rounded border border-rose-500/30 font-mono">CCTV-NVR-1</span>
-            <span className="text-[9px] text-rose-400 font-mono bg-rose-950/50 px-1.5 rounded uppercase font-bold">OFFLINE</span>
+            <span className="text-[10px] font-bold text-rose-700 bg-[var(--bg-tint)] px-2 py-0.5 rounded border border-rose-500/30 font-mono">CCTV-NVR-1</span>
+            <span className="text-[9px] text-rose-700 font-mono bg-rose-50 px-1.5 rounded uppercase font-bold">OFFLINE</span>
           </div>
 
           {/* App Server */}
@@ -259,40 +259,40 @@ export default function NetworkTopology() {
               selectedNodeId === 'app' ? 'scale-110 ring-2 ring-indigo-400 rounded-xl' : ''
             }`}
           >
-            <div className="w-14 h-14 bg-indigo-950/80 border border-indigo-700/40 rounded-xl flex items-center justify-center text-indigo-100 shadow-lg">
-              <span className="material-symbols-outlined text-2xl text-emerald-400">dns</span>
+            <div className="w-14 h-14 bg-[var(--bg-tint)] border border-[var(--border-color)] rounded-xl flex items-center justify-center text-primary-600 shadow-sm">
+              <span className="material-symbols-outlined text-2xl text-emerald-700">dns</span>
             </div>
-            <span className="text-[10px] font-bold text-indigo-200 bg-slate-950/90 px-2 py-0.5 rounded border border-indigo-800/40 font-mono">APP-WEB-1</span>
+            <span className="text-[10px] font-bold text-primary-600 bg-[var(--bg-tint)] px-2 py-0.5 rounded border border-[var(--border-color)] font-mono">APP-WEB-1</span>
           </div>
         </div>
       </div>
 
       {/* Side Inspector Panel */}
-      <aside className="w-full md:w-[320px] bg-[#0b0f19] border-t md:border-t-0 md:border-l border-indigo-900/30 md:h-full flex flex-col glass-panel shrink-0 z-20">
-        <div className="p-4 border-b border-indigo-900/30 flex justify-between items-center bg-indigo-950/40">
-          <h3 className="text-sm font-semibold text-indigo-300 flex items-center gap-2">
-            <span className="material-symbols-outlined text-sm text-indigo-400">info</span>
+      <aside className="w-full xl:w-[320px] bg-[var(--bg-tint)] border-t xl:border-t-0 xl:border-l border-[var(--border-color)] xl:h-full flex flex-col glass-panel shrink-0 z-20">
+        <div className="p-4 border-b border-[var(--border-color)] flex justify-between items-center bg-[var(--bg-tint)]">
+          <h3 className="text-sm font-semibold text-primary-600 flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm text-primary-600">info</span>
             Node Inspector
           </h3>
-          <span className="text-[10px] font-mono text-slate-400 uppercase">{selectedNode.id}</span>
+          <span className="text-[10px] font-mono text-[var(--text-secondary)] uppercase">{selectedNode.id}</span>
         </div>
 
         <div className="p-5 overflow-y-auto flex-1 space-y-6 text-xs">
           {/* Header Specs */}
-          <div className="flex items-center gap-3 pb-4 border-b border-indigo-900/20">
+          <div className="flex items-center gap-3 pb-4 border-b border-[var(--border-color)]">
             <div className={`w-12 h-12 border rounded-xl flex items-center justify-center ${
-              selectedNode.statusType === 'offline' ? 'bg-rose-950/30 border-rose-500 text-rose-400' :
-              selectedNode.statusType === 'warning' ? 'bg-amber-950/30 border-amber-400 text-amber-400' :
-              'bg-emerald-500/10 border-emerald-500/40 text-emerald-400'
+              selectedNode.statusType === 'offline' ? 'bg-rose-50 border-rose-500 text-rose-700' :
+              selectedNode.statusType === 'warning' ? 'bg-amber-50 border-amber-400 text-amber-700' :
+              'bg-emerald-500/10 border-emerald-500/40 text-emerald-700'
             }`}>
               <span className="material-symbols-outlined text-2xl">{selectedNode.icon}</span>
             </div>
             <div>
-              <h4 className="text-base font-bold text-indigo-100">{selectedNode.name}</h4>
+              <h4 className="text-base font-bold text-primary-600">{selectedNode.name}</h4>
               <span className={`inline-flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded-full mt-1 font-bold uppercase ${
-                selectedNode.statusType === 'offline' ? 'bg-rose-950/50 text-rose-400 border border-rose-500/30' :
-                selectedNode.statusType === 'warning' ? 'bg-amber-950/40 text-amber-400 border border-amber-500/30' :
-                'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                selectedNode.statusType === 'offline' ? 'bg-rose-50 text-rose-700 border border-rose-500/30' :
+                selectedNode.statusType === 'warning' ? 'bg-amber-50 text-amber-700 border border-amber-500/30' :
+                'bg-emerald-500/15 text-emerald-700 border border-emerald-500/30'
               }`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${selectedNode.statusType === 'offline' ? 'bg-rose-400' : 'bg-emerald-400'}`}></span> 
                 {selectedNode.status}
@@ -302,45 +302,45 @@ export default function NetworkTopology() {
 
           {/* Details Table */}
           <div className="space-y-3 font-mono text-xs">
-            <div className="flex flex-col gap-0.5 border-b border-indigo-900/20 pb-2">
-              <span className="text-slate-400 uppercase text-[10px] tracking-wider font-sans">IP Address</span>
-              <span className="text-indigo-100">{selectedNode.ip}</span>
+            <div className="flex flex-col gap-0.5 border-b border-[var(--border-color)] pb-2">
+              <span className="text-[var(--text-secondary)] uppercase text-[10px] tracking-wider font-sans">IP Address</span>
+              <span className="text-primary-600">{selectedNode.ip}</span>
             </div>
 
-            <div className="flex flex-col gap-0.5 border-b border-indigo-900/20 pb-2">
-              <span className="text-slate-400 uppercase text-[10px] tracking-wider font-sans">MAC Address</span>
-              <span className="text-indigo-100">{selectedNode.mac}</span>
+            <div className="flex flex-col gap-0.5 border-b border-[var(--border-color)] pb-2">
+              <span className="text-[var(--text-secondary)] uppercase text-[10px] tracking-wider font-sans">MAC Address</span>
+              <span className="text-primary-600">{selectedNode.mac}</span>
             </div>
 
-            <div className="flex flex-col gap-0.5 border-b border-indigo-900/20 pb-2">
-              <span className="text-slate-400 uppercase text-[10px] tracking-wider font-sans">Uptime</span>
-              <span className={selectedNode.statusType === 'offline' ? 'text-rose-400' : 'text-indigo-100'}>
+            <div className="flex flex-col gap-0.5 border-b border-[var(--border-color)] pb-2">
+              <span className="text-[var(--text-secondary)] uppercase text-[10px] tracking-wider font-sans">Uptime</span>
+              <span className={selectedNode.statusType === 'offline' ? 'text-rose-700' : 'text-primary-600'}>
                 {selectedNode.uptime}
               </span>
             </div>
 
-            <div className="flex flex-col gap-0.5 border-b border-indigo-900/20 pb-2">
-              <span className="text-slate-400 uppercase text-[10px] tracking-wider font-sans">Port Speed</span>
-              <span className="text-slate-300">{selectedNode.speed}</span>
+            <div className="flex flex-col gap-0.5 border-b border-[var(--border-color)] pb-2">
+              <span className="text-[var(--text-secondary)] uppercase text-[10px] tracking-wider font-sans">Port Speed</span>
+              <span className="text-[var(--text-secondary)]">{selectedNode.speed}</span>
             </div>
           </div>
 
           {/* Recent Events */}
           <div>
-            <h5 className="text-xs font-semibold text-indigo-200 mb-3">Recent Events</h5>
+            <h5 className="text-xs font-semibold text-primary-600 mb-3">Recent Events</h5>
             <ul className="space-y-2 font-sans">
               {selectedNode.events.map((evt, i) => (
                 <li key={i} className={`flex items-start gap-2 p-2 rounded-xl text-xs ${
-                  evt.type === 'error' ? 'bg-rose-950/30 text-rose-300 border border-rose-500/20' :
-                  evt.type === 'warning' ? 'bg-amber-950/30 text-amber-300 border border-amber-500/20' :
-                  'bg-indigo-950/60 text-slate-300 border border-indigo-800/30'
+                  evt.type === 'error' ? 'bg-rose-50 text-rose-700 border border-rose-500/20' :
+                  evt.type === 'warning' ? 'bg-amber-50 text-amber-700 border border-amber-500/20' :
+                  'bg-[var(--bg-tint)] text-[var(--text-secondary)] border border-[var(--border-color)]'
                 }`}>
                   <span className="material-symbols-outlined text-[16px] mt-0.5">
                     {evt.type === 'error' ? 'error' : evt.type === 'warning' ? 'warning' : 'check_circle'}
                   </span>
                   <div>
                     <span className="block font-semibold">{evt.text}</span>
-                    <span className="text-slate-400 text-[10px] font-mono">{evt.time}</span>
+                    <span className="text-[var(--text-secondary)] text-[10px] font-mono">{evt.time}</span>
                   </div>
                 </li>
               ))}
@@ -349,17 +349,17 @@ export default function NetworkTopology() {
 
           {/* Ping Command Output */}
           {pingResult && (
-            <div className="p-3 bg-[#050811] border border-indigo-900/40 rounded-xl font-mono text-[10px] text-emerald-400 leading-relaxed break-all fade-in">
+            <div className="p-3 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-xl font-mono text-[10px] text-emerald-700 leading-relaxed break-all fade-in">
               {pingResult}
             </div>
           )}
         </div>
 
-        <div className="p-4 border-t border-indigo-900/30 bg-indigo-950/40">
+        <div className="p-4 border-t border-[var(--border-color)] bg-[var(--bg-tint)]">
           <button 
             onClick={handlePing}
             disabled={pinging}
-            className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs font-bold py-2.5 rounded-xl hover:from-indigo-500 hover:to-violet-500 transition-all flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 shadow-md shadow-indigo-600/25"
+            className="w-full bg-primary-500 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-primary-600 transition-all flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 shadow-md shadow-indigo-600/25"
           >
             <span className="material-symbols-outlined text-sm">terminal</span>
             {pinging ? 'Pinging Node...' : 'Ping Node'}

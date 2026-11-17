@@ -57,8 +57,8 @@ export default function Alerts() {
               onClick={() => setFilter(f)}
               className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold capitalize transition-all cursor-pointer ${
                 filter === f
-                  ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/50 shadow-sm'
-                  : 'bg-indigo-950/40 text-slate-400 border border-indigo-900/30 hover:bg-indigo-900/40'
+                  ? 'bg-indigo-600/30 text-primary-600 border border-indigo-500/50 shadow-sm'
+                  : 'bg-[var(--bg-tint)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:bg-[var(--bg-tint)]'
               }`}
             >
               {f}
@@ -69,7 +69,7 @@ export default function Alerts() {
         <button
           onClick={markAllRead}
           disabled={markingAll}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs font-bold font-mono hover:from-indigo-500 hover:to-violet-500 transition-all cursor-pointer disabled:opacity-50 shadow-md shadow-indigo-600/25"
+          className="px-4 py-2 rounded-xl bg-primary-500 text-white text-xs font-bold font-mono hover:bg-primary-600 transition-all cursor-pointer disabled:opacity-50 shadow-md shadow-indigo-600/25"
         >
           {markingAll ? 'Marking...' : 'Mark All Read'}
         </button>
@@ -78,7 +78,7 @@ export default function Alerts() {
       {/* Alert Feed */}
       <div className="space-y-3">
         {loading ? (
-          <div className="text-xs text-slate-400">Loading alerts feed...</div>
+          <div className="text-xs text-[var(--text-secondary)]">Loading alerts feed...</div>
         ) : (
           displayAlerts.map(alert => {
             const isCrit = alert.severity === 'critical';
@@ -86,35 +86,35 @@ export default function Alerts() {
             return (
               <div
                 key={alert.id}
-                className={`glass-panel p-4 rounded-2xl flex items-start justify-between gap-4 border-l-4 transition-all ${
+                className={`glass-panel p-4 rounded-2xl flex flex-col items-start justify-between gap-3 border-l-4 sm:flex-row sm:gap-4 transition-all ${
                   isCrit ? 'border-l-rose-500 bg-rose-500/5' : isMed ? 'border-l-amber-500 bg-amber-500/5' : 'border-l-emerald-500'
                 } ${alert.is_read ? 'opacity-60' : ''}`}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex min-w-0 items-start gap-3">
                   <span className={`material-symbols-outlined text-lg mt-0.5 ${
-                    isCrit ? 'text-rose-400' : isMed ? 'text-amber-400' : 'text-emerald-400'
+                    isCrit ? 'text-rose-700' : isMed ? 'text-amber-700' : 'text-emerald-700'
                   }`}>
                     {isCrit ? 'error' : isMed ? 'warning' : 'info'}
                   </span>
 
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-bold text-indigo-100 font-mono">{alert.server_name}</span>
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="text-sm break-all font-bold text-primary-600 font-mono">{alert.server_name}</span>
                       <span className={`text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full ${
-                        isCrit ? 'bg-rose-950/50 text-rose-400 border border-rose-500/30' : isMed ? 'bg-amber-950/40 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                        isCrit ? 'bg-rose-50 text-rose-700 border border-rose-500/30' : isMed ? 'bg-amber-50 text-amber-700 border border-amber-500/30' : 'bg-emerald-500/15 text-emerald-700 border border-emerald-500/30'
                       }`}>
                         {alert.severity}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-300 mb-1">{alert.message}</p>
-                    <span className="text-[10px] font-mono text-slate-400">{formatDate(alert.created_at)}</span>
+                    <p className="text-xs text-[var(--text-secondary)] mb-1">{alert.message}</p>
+                    <span className="text-[10px] font-mono text-[var(--text-secondary)]">{formatDate(alert.created_at)}</span>
                   </div>
                 </div>
 
                 {!alert.is_read && (
                   <button
                     onClick={() => markRead(alert.id)}
-                    className="px-3 py-1.5 rounded-xl bg-indigo-950/60 text-indigo-300 border border-indigo-800/40 hover:bg-indigo-900/60 text-xs font-mono transition-all cursor-pointer shrink-0"
+                    className="min-h-11 px-3 py-1.5 rounded-xl bg-[var(--bg-tint)] text-primary-600 border border-[var(--border-color)] hover:bg-[var(--bg-tint)] text-xs font-mono transition-all cursor-pointer shrink-0"
                   >
                     Acknowledge
                   </button>

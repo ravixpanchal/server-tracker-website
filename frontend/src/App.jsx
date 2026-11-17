@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext';
 import DashboardLayout from './components/layout/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import Servers from './pages/Servers';
@@ -36,30 +35,28 @@ function PublicRoute({ children }) {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={
-              <PublicRoute><Login /></PublicRoute>
-            } />
-            <Route element={
-              <ProtectedRoute><DashboardLayout /></ProtectedRoute>
-            }>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/servers" element={<Servers />} />
-              <Route path="/topology" element={<NetworkTopology />} />
-              <Route path="/locations" element={<Locations />} />
-              <Route path="/logs" element={<LiveLogs />} />
-              <Route path="/incidents" element={<Incidents />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/alerts" element={<Alerts />} />
-              <Route path="/settings" element={<Settings />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={
+            <PublicRoute><Login /></PublicRoute>
+          } />
+          <Route element={
+            <ProtectedRoute><DashboardLayout /></ProtectedRoute>
+          }>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/servers" element={<Servers />} />
+            <Route path="/topology" element={<NetworkTopology />} />
+            <Route path="/locations" element={<Locations />} />
+            <Route path="/logs" element={<LiveLogs />} />
+            <Route path="/incidents" element={<Incidents />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/alerts" element={<Alerts />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }

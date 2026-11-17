@@ -61,20 +61,20 @@ export default function Analytics() {
     <div className="space-y-6 fade-in">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-indigo-100">System Analytics & Performance</h2>
-          <p className="text-sm text-slate-300">Comprehensive NOC fleet performance, distribution, and exportable reports.</p>
+          <h2 className="text-2xl font-bold text-primary-600">System Analytics & Performance</h2>
+          <p className="text-sm text-[var(--text-secondary)]">Comprehensive NOC fleet performance, distribution, and exportable reports.</p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => handleExport('csv')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-950/60 text-indigo-200 border border-indigo-800/40 text-xs font-mono font-bold hover:bg-indigo-900/60 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--bg-tint)] text-primary-600 border border-[var(--border-color)] text-xs font-mono font-bold hover:bg-[var(--bg-tint)] transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">csv</span> Export CSV
           </button>
           <button
             onClick={() => handleExport('excel')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs font-mono font-bold hover:from-indigo-500 hover:to-violet-500 transition-all cursor-pointer shadow-md shadow-indigo-600/25"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary-500 text-white text-xs font-mono font-bold hover:bg-primary-600 transition-all cursor-pointer shadow-md shadow-indigo-600/25"
           >
             <span className="material-symbols-outlined text-sm">table_view</span> Export Excel
           </button>
@@ -83,9 +83,9 @@ export default function Analytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Fleet Distribution */}
-        <div className="glass-panel p-5 rounded-2xl border border-indigo-900/30">
-          <h3 className="text-sm font-semibold text-indigo-100 mb-4 flex items-center gap-2">
-            <span className="material-symbols-outlined text-emerald-400">pie_chart</span> Server Health Distribution
+        <div className="glass-panel p-5 rounded-2xl border border-[var(--border-color)]">
+          <h3 className="text-sm font-semibold text-primary-600 mb-4 flex items-center gap-2">
+            <span className="material-symbols-outlined text-emerald-700">pie_chart</span> Server Health Distribution
           </h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -94,10 +94,9 @@ export default function Analytics() {
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={90}
+                  innerRadius="48%"
+                  outerRadius="74%"
                   dataKey="value"
-                  label={({ name }) => name}
                 >
                   {pieData.map((_, i) => (
                     <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
@@ -107,12 +106,20 @@ export default function Analytics() {
               </PieChart>
             </ResponsiveContainer>
           </div>
+          <ul className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-[var(--text-secondary)]">
+            {pieData.map(({ name, value }, index) => (
+              <li key={name} className="flex items-center gap-1.5">
+                <span aria-hidden="true" className="size-2.5 rounded-full" style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }} />
+                {name} ({value})
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Failure Frequency */}
-        <div className="glass-panel p-5 rounded-2xl border border-indigo-900/30">
-          <h3 className="text-sm font-semibold text-indigo-100 mb-4 flex items-center gap-2">
-            <span className="material-symbols-outlined text-rose-400">bar_chart</span> Anomaly Frequency (Top Servers)
+        <div className="glass-panel p-5 rounded-2xl border border-[var(--border-color)]">
+          <h3 className="text-sm font-semibold text-primary-600 mb-4 flex items-center gap-2">
+            <span className="material-symbols-outlined text-rose-700">bar_chart</span> Anomaly Frequency (Top Servers)
           </h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">

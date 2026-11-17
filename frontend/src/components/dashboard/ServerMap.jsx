@@ -1,3 +1,4 @@
+import { basemapUrl, basemapAttribution } from '../../lib/basemap';
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -71,8 +72,8 @@ export default function ServerMap({ servers }) {
           scrollWheelZoom={true}
         >
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            attribution={basemapAttribution}
+            url={basemapUrl}
           />
           {servers.map((server) => {
             const color = STATUS_COLORS[server.status] || STATUS_COLORS.active;
